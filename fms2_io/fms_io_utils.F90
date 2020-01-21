@@ -408,17 +408,16 @@ subroutine restart_filepath_mangle(dest, source)
   endif
   call string_copy(dest, source(1:i-1)//".res"//source(i:len_trim(source)))
 end subroutine restart_filepath_mangle
-
+!> @brief Checks if the flag is .true. for the file fname.  The flag should be the result of open_file
 subroutine open_check(flag, fname)
-
   logical, intent(in) :: flag
   character(len=*), intent(in), optional :: fname !< The file name
   
   if (.not. flag) then
      if (present(fname)) then
-          call mpp_error(fatal, "Error occured while opening file "//trim(fname))
+          call error("Error occured while opening file "//trim(fname))
      else
-          call mpp_error(fatal, "Error occured while opening file.")
+          call error("Error occured while opening file.")
      endif
   endif
 end subroutine open_check
