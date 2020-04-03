@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.7..3.15 FATAL_ERROR)
 project(libFMS
   VERSION 2020.02
   DESCRIPTION  "GFDL FMS Library"
-  HOMEPAGE_URL https://www.gfdl.noaa.gov/fms
+#  HOMEPAGE_URL https://www.gfdl.noaa.gov/fms
   LANGUAGES C Fortran)
 
 add_definitions(-Duse_libMPI)
@@ -96,7 +96,6 @@ add_library(FMS
   diag_manager/diag_data.F90
   diag_manager/diag_grid.F90
   diag_manager/diag_manager.F90
-  diag_manager/diag_manifest.F90
   diag_manager/diag_output.F90
   diag_manager/diag_table.F90
   diag_manager/diag_util.F90
@@ -111,7 +110,6 @@ add_library(FMS
   fms2_io/fms_netcdf_domain_io.F90
   fms2_io/fms_netcdf_unstructured_domain_io.F90
   fms2_io/fms2_io.F90
-  fms2_io/legacy.F90
   fms2_io/netcdf_io.F90
   horiz_interp/horiz_interp_bicubic.F90
   horiz_interp/horiz_interp_bilinear.F90
@@ -120,7 +118,6 @@ add_library(FMS
   horiz_interp/horiz_interp_type.F90
   horiz_interp/horiz_interp.F90
   interpolator/interpolator.F90
-  memutils/memuse.c
   memutils/memutils.F90
   monin_obukhov/monin_obukhov_kernel.F90
   monin_obukhov/monin_obukhov.F90
