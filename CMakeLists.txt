@@ -156,3 +156,67 @@ add_library(FMS
   tracer_manager/tracer_manager.F90
   tridiagonal/tridiagonal.F90
 )
+
+# Usage:
+# Clients shoulb be able to use FMS by adding these two lines:
+# 1 find_package(FMS VNo REQUIRED)
+# 2 target_link_libraries(client app name FMS::FMS)
+#     where VNo above is the version number - TBD
+
+
+# Recommended namespace alias:
+# (Which may be needed if FMS is to be used inside the build tree.)
+add_library(FMS::FMS  ALIAS FMS)
+
+# Install the library (target) and the export targets
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/FMS)
+
+install(TARGETS FMS
+    EXPORT FMS-targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+#Select an export name, which for now will just be FMS
+#set_target_properties(FMS PROPERTIES EXPORT_NAME FMS)
+
+install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+#Export the targets to a script file
+install(EXPORT FMS-targets
+  FILE FMSTargets.cmake
+  NAMESPACE FMS::
+  DESTINATION ${INSTALL_CONFIGDIR} )
+
+#Create the FMSConfigVersion.cmake file
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY AnyNewerVersion )
+# Update the ConfigVersion.cmake file with its correspoding .in file
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FMSConfigVersion.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR} )
+
+# Also update the FMSConfig.cmake file with its corresponding .in file
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FMSConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR} )
+  
+# Install the files
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+
+# Exporting from the build tree
+export(EXPORT FMS-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/FMSTargets.cmake
+    NAMESPACE FMS::)
+
+# Register package in user's package registry
+export(PACKAGE FMS)
+
