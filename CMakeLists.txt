@@ -208,8 +208,7 @@ configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FMSConfig.cmake.in
 install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
-    DESTINATION ${INSTALL_CONFIGDIR}
-)
+    DESTINATION ${INSTALL_CONFIGDIR} )
 
 
 # Exporting from the build tree
