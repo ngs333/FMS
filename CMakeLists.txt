@@ -25,7 +25,7 @@ cmake_minimum_required(VERSION 3.7..3.15 FATAL_ERROR)
 project(libFMS
   VERSION 2020.02
   DESCRIPTION  "GFDL FMS Library"
-#  HOMEPAGE_URL https://www.gfdl.noaa.gov/fms
+  HOMEPAGE_URL https://www.gfdl.noaa.gov/fms
   LANGUAGES C Fortran)
 
 add_definitions(-Duse_libMPI)
@@ -53,13 +53,16 @@ endif(OPENMP)
 
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/modules
   ${libFMS_SOURCE_DIR}/include
   ${libFMS_SOURCE_DIR}/mpp/include
   ${libFMS_SOURCE_DIR}/fms
   ${libFMS_SOURCE_DIR}/fms2_io/include
   ${MPI_C_INCLUDE_PATH}
   ${MPI_Fortran_INCLUDE_PATH}
-)
+  )
+
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
 message("************************************************************")
 message("Building FMS with")
@@ -168,12 +171,14 @@ add_library(FMS
 # (Which may be needed if FMS is to be used inside the build tree.)
 add_library(FMS::FMS  ALIAS FMS)
 
+
 # Install the library (target) and the export targets
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/FMS)
 
+
 install(TARGETS FMS
-    EXPORT FMS-targets
+    EXPORT FMS-export
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
@@ -182,8 +187,10 @@ install(TARGETS FMS
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
+install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
+
 #Export the targets to a script file
-install(EXPORT FMS-targets
+install(EXPORT FMS-export
   FILE FMSTargets.cmake
   NAMESPACE FMS::
   DESTINATION ${INSTALL_CONFIGDIR} )
@@ -195,12 +202,12 @@ write_basic_package_version_file(
     VERSION ${PROJECT_VERSION}
     COMPATIBILITY AnyNewerVersion )
 # Update the ConfigVersion.cmake file with its correspoding .in file
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FMSConfigVersion.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/FMSConfigVersion.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR} )
 
 # Also update the FMSConfig.cmake file with its corresponding .in file
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/FMSConfig.cmake.in
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/FMSConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/FMSConfig.cmake
     INSTALL_DESTINATION ${INSTALL_CONFIGDIR} )
   
@@ -210,12 +217,14 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR} )
 
-
+  
 # Exporting from the build tree
-export(EXPORT FMS-targets
+export(EXPORT FMS-export
     FILE ${CMAKE_CURRENT_BINARY_DIR}/FMSTargets.cmake
     NAMESPACE FMS::)
 
 # Register package in user's package registry
 export(PACKAGE FMS)
+
+
 
