@@ -48,15 +48,16 @@ cd FMS
 
 mkdir build && cd build
 
-cmake -DCMAKE_INSTALL_PREFIX:PATH=fms_install_path ..
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=fms_install_path ..
 
-cmake --build . --target install --config Release
+cmake --build . --target install
 
-# When the above command finishes, the fms_install_path will have an include and a lib directory. The lib directory will have these files:
-
+# When the above command finishes, the fms_install_path will have an include and a lib directory. The lib directory
+# will have these files:
      libFMS.a
      /cmake/FMS/FMSTargets.cmake
      /cmake/FMS/FMSTargets-noconfig.cmake
      /cmake/FMS/FMSConfig.cmake
      /cmake/FMS/FMSConfigVersion.cmake
+ # The include directory will have header and module files.
 ######################

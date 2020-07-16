@@ -53,13 +53,16 @@ endif(OPENMP)
 
 include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/modules
   ${libFMS_SOURCE_DIR}/include
   ${libFMS_SOURCE_DIR}/mpp/include
   ${libFMS_SOURCE_DIR}/fms
   ${libFMS_SOURCE_DIR}/fms2_io/include
   ${MPI_C_INCLUDE_PATH}
   ${MPI_Fortran_INCLUDE_PATH}
-)
+  )
+
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/modules)
 
 message("************************************************************")
 message("Building FMS with")
@@ -168,9 +171,11 @@ add_library(FMS
 # (Which may be needed if FMS is to be used inside the build tree.)
 add_library(FMS::FMS  ALIAS FMS)
 
+
 # Install the library (target) and the export targets
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/FMS)
+
 
 install(TARGETS FMS
     EXPORT FMS-export
@@ -181,6 +186,8 @@ install(TARGETS FMS
 #set_target_properties(FMS PROPERTIES EXPORT_NAME FMS)
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 #Export the targets to a script file
 install(EXPORT FMS-export
@@ -210,7 +217,7 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/FMSConfigVersion.cmake
     DESTINATION ${INSTALL_CONFIGDIR} )
 
-
+  
 # Exporting from the build tree
 export(EXPORT FMS-export
     FILE ${CMAKE_CURRENT_BINARY_DIR}/FMSTargets.cmake
@@ -218,4 +225,6 @@ export(EXPORT FMS-export
 
 # Register package in user's package registry
 export(PACKAGE FMS)
+
+
 
